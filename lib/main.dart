@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'widgets/todo_tile.dart';
+import 'models/todo.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,6 +39,8 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Todo todo =
+      Todo(title: 'Goto gym', desc: 'Going to gym is nessessary', isDone: true);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,9 +54,18 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.white,
         centerTitle: true,
       ),
-      body: Column(
+      body: ListView(
         children: [
-          TodoTile(),
+          TodoTile(todo: todo),
+          TodoTile(todo: todo),
+          TodoTile(todo: todo),
+          TodoTile(todo: todo),
+          TodoTile(todo: todo),
+          TodoTile(todo: todo),
+          TodoTile(todo: todo),
+          TodoTile(todo: todo),
+          TodoTile(todo: todo),
+          TodoTile(todo: todo),
         ],
       ),
       floatingActionButton: FloatingActionButton(
