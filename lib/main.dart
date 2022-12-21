@@ -66,6 +66,10 @@ class _MyHomePageState extends State<MyHomePage> {
           TodoTile(todo: todo),
           TodoTile(todo: todo),
           TodoTile(todo: todo),
+          TodoTile(todo: todo),
+          TodoTile(todo: todo),
+          TodoTile(todo: todo),
+          TodoTile(todo: todo),
         ],
       ),
       floatingActionButton: FloatingActionButton(
