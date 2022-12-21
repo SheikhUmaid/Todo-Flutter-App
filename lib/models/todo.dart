@@ -3,5 +3,5 @@ class Todo {
   String desc;
   bool isDone;
 
-  Todo({required this.title, required this.desc, required this.isDone})
+  Todo({required this.title, required this.desc, required this.isDone});
 }

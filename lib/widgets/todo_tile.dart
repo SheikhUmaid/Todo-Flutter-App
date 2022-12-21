@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/models/todo.dart';
 
 class TodoTile extends StatelessWidget {
-  // late Todo todo;
+  Todo todo;
 
-  const TodoTile({super.key, todo});
+  TodoTile({
+    super.key,
+    required this.todo,
+  });
+
+  // const TodoTile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +30,7 @@ class TodoTile extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'todo.title',
+                      todo.title,
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -43,7 +48,7 @@ class TodoTile extends StatelessWidget {
                   height: 8.0,
                 ),
                 Text(
-                  'todo.desc',
+                  todo.desc,
                   style: TextStyle(
                       color: Colors.white24,
                       fontWeight: FontWeight.bold,
