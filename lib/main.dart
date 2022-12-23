@@ -34,7 +34,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<Todo> todos = [];
-
+  bool adding = false;
   fetchTodos() async {
     debugPrint('fetchTodos called');
     final response =
@@ -46,6 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         for (var todoJson in todosJson) {
           todos.add(Todo(
+              id: todoJson['id'].toString(),
               title: todoJson['title'],
               desc: todoJson['description'],
               isDone: todoJson['completed']));
@@ -58,10 +59,50 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    debugPrint('initState called');
     super.initState();
+    debugPrint('initState called');
     fetchTodos();
     debugPrint('initState end');
+  }
+
+  deleteTodo(String id) async {
+    debugPrint('deleteTodo called');
+    String url = 'http://192.168.42.236:8000/api/$id/';
+    debugPrint(url);
+    final response = await http.delete(Uri.parse(url));
+    if (response.statusCode == 204) {
+      // rebuild the screen
+      setState(() {
+        todos = [];
+        fetchTodos();
+      });
+    } else {
+      throw Exception('Failed to delete todo');
+    }
+  }
+
+  addTodo() async {
+    debugPrint('addTodo called');
+    String url = 'http://192.168.42.236:8000/api/';
+    debugPrint(url);
+    final response = await http.post(Uri.parse(url),
+        body: jsonEncode(<String, dynamic>{
+          'title': 'title',
+          'description': 'description',
+          'completed': false,
+        }),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        });
+    if (response.statusCode == 201) {
+      // rebuild the screen
+      setState(() {
+        todos = [];
+        fetchTodos();
+      });
+    } else {
+      throw Exception('Failed to add todo');
+    }
   }
 
   @override
@@ -78,18 +119,20 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
       ),
       body: ListView(
-        children: todos.map((todo) => TodoTile(todo: todo)).toList(),
+        children: todos
+            .map((todo) => TodoTile(
+                  todo: todo,
+                  deleteTodo: () => deleteTodo(todo.id),
+                ))
+            .toList(),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
         onPressed: () {
           debugPrint(todos.toString());
+          setState(() => addTodo());
         },
         tooltip: 'Add Todo',
-        child: const Icon(
-          Icons.add,
-          color: Colors.black,
-        ),
       ),
     );
   }
