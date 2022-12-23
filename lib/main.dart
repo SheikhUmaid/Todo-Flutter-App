@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'widgets/todo_tile.dart';
 import 'models/todo.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
@@ -31,8 +33,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Todo todo =
-      Todo(title: 'Goto gym', desc: 'Going to gym is nessessary', isDone: true);
+  List<Todo> todos = [];
+
+  fetchTodos() async {
+    debugPrint('fetchTodos called');
+    final response =
+        await http.get(Uri.parse('http://192.168.42.236:8000/api/'));
+    debugPrint('fetchTodos end');
+    if (response.statusCode == 200) {
+      final todosJson = jsonDecode(response.body) as List;
+      print(todosJson);
+      setState(() {
+        for (var todoJson in todosJson) {
+          todos.add(Todo(
+              title: todoJson['title'],
+              desc: todoJson['description'],
+              isDone: todoJson['completed']));
+        }
+      });
+    } else {
+      throw Exception('Failed to load todos');
+    }
+  }
+
+  @override
+  void initState() {
+    debugPrint('initState called');
+    super.initState();
+    fetchTodos();
+    debugPrint('initState end');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,33 +71,20 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text(
           'Todo With Django',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Color.fromARGB(255, 72, 52, 52)),
         ),
         elevation: 0,
         backgroundColor: Colors.white,
         centerTitle: true,
       ),
       body: ListView(
-        children: [
-          TodoTile(todo: todo),
-          TodoTile(todo: todo),
-          TodoTile(todo: todo),
-          TodoTile(todo: todo),
-          TodoTile(todo: todo),
-          TodoTile(todo: todo),
-          TodoTile(todo: todo),
-          TodoTile(todo: todo),
-          TodoTile(todo: todo),
-          TodoTile(todo: todo),
-          TodoTile(todo: todo),
-          TodoTile(todo: todo),
-          TodoTile(todo: todo),
-          TodoTile(todo: todo),
-        ],
+        children: todos.map((todo) => TodoTile(todo: todo)).toList(),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
-        onPressed: _incrementCounter,
+        onPressed: () {
+          debugPrint(todos.toString());
+        },
         tooltip: 'Add Todo',
         child: const Icon(
           Icons.add,

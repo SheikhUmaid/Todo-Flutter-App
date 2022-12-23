@@ -4,4 +4,12 @@ class Todo {
   bool isDone;
 
   Todo({required this.title, required this.desc, required this.isDone});
+
+  Todo fromJson(Map<String, dynamic> json) {
+    return Todo(
+      title: json['title'],
+      desc: json['desc'],
+      isDone: json['isDone'],
+    );
+  }
 }
